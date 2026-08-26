@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duru Er</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Petit+Formal+Script&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000;
+    --ink:#e9e0d2;
+    --ink-dim:#8c8477;
+    --line: rgba(159,147,194,.07);
+    --accent:#9f93c2;
+    --violet:#9f93c2;
+    --violet-dark:#6f6390;
+    --violet-light:#c9bfe0;
+    --mint:#a9e8d4;
+    --mint-dim:#6fae9b;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html,body{ background:var(--bg); }
+
+  body{
+    color:var(--ink);
+    font-family:'Cormorant Garamond', serif;
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* minimalist, monochrome pattern — thin diagonal hairlines, no color */
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image: repeating-linear-gradient(45deg, var(--line) 0px, var(--line) 1px, transparent 1px, transparent 90px);
+    pointer-events:none;
+    z-index:0;
+  }
+  body::after{
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image:
+      radial-gradient(circle at 50% 42%, rgba(169,232,212,.09), transparent 45%),
+      radial-gradient(circle at 50% 0%, rgba(255,255,255,.03), transparent 55%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  header{
+    position:relative;
+    z-index:1;
+    text-align:center;
+    padding:110px 24px 90px;
+  }
+
+  .sprig{
+    position:absolute;
+    pointer-events:none;
+    opacity:.85;
+  }
+  .sprig.left{ top:14px; left:2%; width:210px; }
+  .sprig.right{ top:14px; right:2%; width:210px; transform:scaleX(-1); }
+
+  @media (max-width:980px){
+    .sprig{ display:none; }
+  }
+
+  h1{
+    font-family:'Petit Formal Script', cursive;
+    font-weight:400;
+    font-size:clamp(2.6rem, 6vw, 4.2rem);
+    color:var(--violet-light);
+    letter-spacing:-.01em;
+  }
+
+  header .subtitle{
+    margin-top:4px;
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    font-size:.6rem;
+    letter-spacing:.36em;
+    text-transform:uppercase;
+    color:var(--violet);
+  }
+
+  .divider{
+    width:64px;
+    height:1px;
+    margin:26px auto 0;
+    background:linear-gradient(90deg, transparent, var(--mint-dim), transparent);
+    opacity:.6;
+    position:relative;
+    z-index:1;
+  }
+
+  main{
+    position:relative;
+    z-index:1;
+    max-width:1520px;
+    margin:0 auto;
+    padding:0 20px 160px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(380px, 1fr));
+    gap:14px;
+    align-items:start;
+  }
+
+  .piece{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+
+  .frame{
+    position:relative;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    background:#050505;
+    border:1px solid rgba(159,147,194,.12);
+    transition:border-color .4s ease, box-shadow .4s ease;
+  }
+  .frame:hover{
+    border-color:rgba(169,232,212,.3);
+    box-shadow:0 0 50px rgba(169,232,212,.06);
+  }
+
+  .frame img{
+    display:block;
+    width:100%;
+    max-height:72vh;
+    object-fit:contain;
+    -webkit-user-drag:none;
+    user-select:none;
+    -webkit-touch-callout:none;
+    transition:opacity .35s ease;
+  }
+
+  /* the alternate shot, resting as a small option in the corner — like a second page of a file */
+  .alt-toggle{
+    position:absolute;
+    right:14px;
+    bottom:14px;
+    width:64px;
+    height:64px;
+    border:1px solid rgba(159,147,194,.4);
+    background:#000;
+    cursor:pointer;
+    overflow:hidden;
+    opacity:.85;
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .alt-toggle:hover{
+    opacity:1;
+    transform:scale(1.05);
+  }
+  .alt-toggle img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    -webkit-user-drag:none;
+    user-select:none;
+  }
+
+  .piece-name{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    font-size:1.25rem;
+    letter-spacing:.06em;
+    color:var(--violet);
+  }
+
+  @media (max-width:640px){
+    header{ padding:80px 20px 60px; }
+    main{ grid-template-columns:1fr; gap:60px; }
+  }
+</style>
+</head>
+<body oncontextmenu="return false;">
+
+<header>
+  <svg class="sprig left" viewBox="0 0 180 220" xmlns="http://www.w3.org/2000/svg">
+    <path d="M90 178 C 84 150, 92 130, 86 108" fill="none" stroke="var(--violet-dark)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M86 140 C 66 136, 52 144, 44 160 C 64 164, 80 156, 86 140 Z" fill="none" stroke="var(--violet-dark)" stroke-width="1.4"/>
+    <path d="M88 118 C 108 112, 122 118, 130 134 C 110 138, 94 132, 88 118 Z" fill="none" stroke="var(--violet-dark)" stroke-width="1.4"/>
+    <g transform="translate(90 90)">
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(0)" fill="none" stroke="var(--violet)" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(72)" fill="none" stroke="var(--violet)" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(144)" fill="none" stroke="var(--violet)" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(216)" fill="none" stroke="var(--violet)" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(288)" fill="none" stroke="var(--violet)" stroke-width="1.5" stroke-linejoin="round"/>
+      <circle cx="0" cy="0" r="5" fill="var(--violet-light)"/>
+    </g>
+    <g transform="translate(146 172) scale(.5)">
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(0)" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(72)" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(144)" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(216)" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(288)" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="0" cy="0" r="5" fill="var(--violet-light)"/>
+    </g>
+  </svg>
+
+  <h1>Duru Er</h1>
+  <div class="subtitle">digital photorealistic artist</div>
+  <div class="divider"></div>
+
+  <svg class="sprig right" viewBox="0 0 180 220" xmlns="http://www.w3.org/2000/svg">
+    <path d="M90 178 C 84 150, 92 130, 86 108" fill="none" stroke="var(--violet-dark)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M86 140 C 66 136, 52 144, 44 160 C 64 164, 80 156, 86 140 Z" fill="none" stroke="var(--violet-dark)" stroke-width="1.4"/>
+    <path d="M88 118 C 108 112, 122 118, 130 134 C 110 138, 94 132, 88 118 Z" fill="none" stroke="var(--violet-dark)" stroke-width="1.4"/>
+    <g transform="translate(90 90)">
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(0)" fill="none" stroke="var(--violet)" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(72)" fill="none" stroke="var(--violet)" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(144)" fill="none" stroke="var(--violet)" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(216)" fill="none" stroke="var(--violet)" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(288)" fill="none" stroke="var(--violet)" stroke-width="1.5" stroke-linejoin="round"/>
+      <circle cx="0" cy="0" r="5" fill="var(--violet-light)"/>
+    </g>
+    <g transform="translate(146 172) scale(.5)">
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(0)" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(72)" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(144)" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(216)" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M0,0 C-17,-19.3 -9.4,-39.1 0,-46 C9.4,-39.1 17,-19.3 0,0" transform="rotate(288)" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="0" cy="0" r="5" fill="var(--violet-light)"/>
+    </g>
+  </svg>
+</header>
+
+<main id="gallery"></main>
+
+<script>
+  // Her eser 1 ya da 2 görsel alabilir: images[0] genel görüntü, images[1] yakın görüntü.
+  // İkinci görsel varsa köşede küçük bir seçenek olarak durur, tıklanınca yer değiştirir.
+  // Bütün eserler galeri ızgarasında yan yana dizilir (sergi duvarı gibi).
+  const artworks = [
+    {
+      name: "Marc Spector",
+      images: [
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Genel+Goruntu",
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Yakin+Goruntu"
+      ]
+    },
+    {
+      name: "Ada Wong",
+      images: [
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Genel+Goruntu",
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Yakin+Goruntu"
+      ]
+    },
+    {
+      name: "Rayne",
+      images: [
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Genel+Goruntu"
+      ]
+    },
+    {
+      name: "Okul Üniforması",
+      images: [
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Genel+Goruntu",
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Yakin+Goruntu"
+      ]
+    },
+    {
+      name: "Jessie",
+      images: [
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Genel+Goruntu"
+      ]
+    },
+    {
+      name: "Gece Rutini",
+      images: [
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Genel+Goruntu",
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Yakin+Goruntu"
+      ]
+    },
+    {
+      name: "Sınıf Arkadaşı",
+      images: [
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Genel+Goruntu"
+      ]
+    },
+    {
+      name: "Yağmurlu Sokak",
+      images: [
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Genel+Goruntu",
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Yakin+Goruntu"
+      ]
+    },
+    {
+      name: "Portre Çalışması",
+      images: [
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Genel+Goruntu"
+      ]
+    },
+    {
+      name: "Kütüphane",
+      images: [
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Genel+Goruntu",
+        "https://placehold.co/1600x2000/050505/8c8477?font=roboto&text=Yakin+Goruntu"
+      ]
+    }
+  ];
+
+  const gallery = document.getElementById('gallery');
+
+  // Galeri en fazla 10 eser gösterir — 10'dan fazlasını artworks dizisine eklesen de
+  // sadece ilk 10 tanesi listelenir.
+  const MAX_ARTWORKS = 10;
+  const shownArtworks = artworks.slice(0, MAX_ARTWORKS);
+
+  function protectImage(img){
+    img.setAttribute('draggable', 'false');
+    img.addEventListener('contextmenu', e => e.preventDefault());
+    img.addEventListener('dragstart', e => e.preventDefault());
+  }
+
+  shownArtworks.forEach(art => {
+    const piece = document.createElement('section');
+    piece.className = 'piece';
+
+    const frame = document.createElement('div');
+    frame.className = 'frame';
+
+    const mainImg = document.createElement('img');
+    mainImg.src = art.images[0];
+    mainImg.alt = art.name;
+    mainImg.loading = 'lazy';
+    mainImg.decoding = 'async';
+    protectImage(mainImg);
+    frame.appendChild(mainImg);
+
+    if (art.images.length > 1){
+      const alt = document.createElement('div');
+      alt.className = 'alt-toggle';
+      const altImg = document.createElement('img');
+      altImg.src = art.images[1];
+      altImg.alt = art.name + ' - diğer görüntü';
+      altImg.loading = 'lazy';
+      protectImage(altImg);
+      alt.appendChild(altImg);
+
+      alt.addEventListener('click', () => {
+        const current = mainImg.src;
+        mainImg.style.opacity = 0;
+        setTimeout(() => {
+          mainImg.src = altImg.src;
+          mainImg.style.opacity = 1;
+        }, 180);
+        altImg.src = current;
+      });
+
+      frame.appendChild(alt);
+    }
+
+    const name = document.createElement('div');
+    name.className = 'piece-name';
+    name.textContent = art.name;
+
+    piece.appendChild(frame);
+    piece.appendChild(name);
+    gallery.appendChild(piece);
+  });
+
+  // sağ tık ve sürükleyerek kopyalamayı engelle (genel önlem)
+  document.addEventListener('contextmenu', e => {
+    if (e.target.tagName === 'IMG') e.preventDefault();
+  });
+  document.addEventListener('dragstart', e => {
+    if (e.target.tagName === 'IMG') e.preventDefault();
+  });
+</script>
+
+</body>
+</html>
